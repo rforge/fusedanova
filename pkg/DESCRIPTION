@@ -1,0 +1,32 @@
+Package: fusedanova
+Type: Package
+Title: Fused ANOVA
+Version: 0.1
+Date: 2013-02-27
+Author: @author Pierre Gutierrez \email{pierre.gutierrez@@gmail.com}, Julien
+    chiquet, Guillem Rigaill.
+Maintainer: Julien Chiquet <julien.chiquet@genopole.cnrs.fr>
+Description: This package is about Fused ANOVA.
+License: GPL (>=2)
+Depends:
+    R (>= 2.11.0),
+    Rcpp (>= 0.9.9),
+    lattice
+Imports:
+    Rcpp,
+    ggplot2,
+    parallel,
+    grid,
+    methods,
+    plyr
+Suggests:
+    testthat
+LinkingTo: Rcpp
+Collate:
+    'crossval.R'
+    'crossval_class.R'
+    'fusedanova-class.R'
+    'fusedanova.R'
+    'init.R'
+    'utils.R'
+    'fusedanova-package.R'
