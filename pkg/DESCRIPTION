@@ -1,26 +1,24 @@
 Package: fusedanova
 Type: Package
 Title: Fused ANOVA
-Version: 0.1
+Version: 0.1-0
 Date: 2013-11-01
 Author: @author Pierre Gutierrez \email{pierre.gutierrez@@gmail.com}, Julien
     chiquet, Guillem Rigaill.
 Maintainer: Julien Chiquet <julien.chiquet@genopole.cnrs.fr>
 Description: This package implement Fused-ANOVA, a penalized method to solve the
-    one-way ANOVA problem by collapsing the coefficients of $K$
+    one-way ANOVA problem by collapsing the coefficients of K
     conditions. It reconstructs a balanced tree structure between the
-    condition with a homotopy algorithm in $\mathcal{O}(K\log(K))$.
+    condition with a homotopy algorithm in O(K\log(K)).
 License: GPL (>=2)
 Depends:
-    R (>= 3.0.0),
-    Rcpp (>= 0.9.9),
-    lattice
-Imports:
-    Rcpp,
     ggplot2,
+    R (>= 3.0.0),
+    Rcpp,
+Imports:
+    methods,
     parallel,
     grid,
-    methods,
     plyr
 Suggests:
     testthat
@@ -31,6 +29,5 @@ Collate:
     'fusedanova-class.R'
     'fusedanova.R'
     'init.R'
-    'utils.R'
     'fusedanova-package.R'
     'aves.R'

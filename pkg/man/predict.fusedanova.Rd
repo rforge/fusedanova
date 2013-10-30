@@ -1,7 +1,7 @@
 \docType{methods}
 \name{predict,fusedanova-method}
-\alias{predict.fusedanova}
 \alias{predict,fusedanova-method}
+\alias{predict.fusedanova}
 \title{Predict method for a fusedanova object}
 \arguments{
   \item{object}{an object of class \code{fusedanova}.}

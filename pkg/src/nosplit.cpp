@@ -342,7 +342,7 @@ void insert_new_event(Events *eventlist,Group *newg,
 						Group *neighbor_group,Groups::iterator g_it_up,
 						Group *g_down){
 						
-	if(g_down-> nextFusionUp!= NullEvent){
+	if(g_down-> nextFusionUp != NullEvent){
 		(*eventlist).erase(g_down->nextFusionUp); // erase the event that will not happen
 	}
 	Group *g_up = *g_it_up;

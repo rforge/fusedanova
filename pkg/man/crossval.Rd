@@ -16,6 +16,9 @@
   \item{K}{integer indicating the number of folds. Default
   is 10.}
 
+  \item{V}{integer indicating the number of times the K
+  folds CV will be averaged. Default is 1 (no averaging).}
+
   \item{folds}{list of \code{K} vectors that describes the
   folds to use for the cross-validation. By default, the
   folds are randomly sampled with the specified K. The same

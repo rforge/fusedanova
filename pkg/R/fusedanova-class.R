@@ -10,10 +10,10 @@
 ##' ; \code{slope}; \code{idown} the minimal index of class in the group and \code{iup}, the maximum one;
 ##'  for each fusion time \code{lambda}.}
 ##'
-##' \item{\code{order}: }{a vector giving the order of means before any fuse. 
+##' \item{\code{order}: }{a vector giving the order of means before any fuse.
 ##' Needed with \code{classes} for data conversion to a more understandable format.}
 ##'
-##' } 
+##' }
 ##' }
 ##'
 ##' \item{\code{weights}: }{the weights used t eprform the fit.}
@@ -22,20 +22,23 @@
 ##' parameter in the \code{fusedanova} function.}
 ##'
 ##' \item{\code{prediction}: }{if a \code{lambdalist} was given to the \code{fusedanova} function,
-##' a list contaning for each variable an object with the same format as the ones in 
+##' a list contaning for each variable an object with the same format as the ones in
 ##' \code{result}. Else, an empty list.}
 ##'
 ##' \item{\code{lambdalist}: }{the \code{lambdalist} vector parameter given in the
 ##'  \code{fusedanova} function. If not given, empty vector.}
 ##'
 ##' \item{\code{algorithm}: }{a character string indicating wether splits where allowed or not.}
-##' 
-##' } 
+##'
+##' }
 ##'
 ##' @section Methods:
 ##' Specific plotting, predict and conversion methods are available and documented
-##' (\code{\link{plot.fusedanova}}, \code{\link{predict.fusedanova}}, 
+##' (\code{\link{plot.fusedanova}}, \code{\link{predict.fusedanova}},
 ##' \code{\link{dataconvert.fusedanova}}).
+##'
+##' @aliases predict,fusedanovaquadrupen-method
+##' print,fusedanova-method show,fusedanova-method
 ##'
 ##' @docType class
 ##'
@@ -51,6 +54,9 @@
 ##' @exportMethod predict
 ##' @exportMethod print
 ##' @exportMethod show
+##'
+##' @importFrom stats predict
+##'
 setClass("fusedanova",
 	representation = representation(
 		result  = "list", # list of triple (dataframe,vector,vector)
@@ -77,17 +83,17 @@ setMethod("show", "fusedanova", definition =
 
 ##' Conversion method for a fusedanova object
 ##'
-##' Produce for each object (dataframe, vector of oeder, vector of class) in the list of 
+##' Produce for each object (dataframe, vector of oeder, vector of class) in the list of
 ##' \code{result} or \code{prediction} (if \code{predicted} == \code{TRUE}) a new dataframe
 ##' containing for each fusion the \code{lambda}, \code{beta}, \code{slope}, \code{class}.
 ##'
 ##' @param object an object of class \code{fusedanova}.
 ##' @param predicted logical; if \code{TRUE}, the return is calculated on the \code{result} slot,
 ##'  else on the \code{prediction} slot. By default, \code{FALSE}.
-##' @param listformat logical; does the return should be a list of dataframes for each variable 
+##' @param listformat logical; does the return should be a list of dataframes for each variable
 ##' or only one dataframe with one more column indexing the variables. By default, \code{FALSE}.
 ##' @param ... used for S4 compatibility.
-##' 
+##'
 ##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
 ##' @name dataconvert,fusedanova-method
@@ -100,7 +106,7 @@ setMethod("show", "fusedanova", definition =
 ##' data(aves)
 ##' fa <- fusedanova(x=aves$weight, class=aves$family)
 ##' dataconvert(fa)
-##' 
+##'
 ##' @exportMethod dataconvert
 setGeneric ( name= "dataconvert",
 	def = function (object,...){ standardGeneric ("dataconvert")}
@@ -115,12 +121,12 @@ setMethod("dataconvert", "fusedanova",
      }else {
        res = object@prediction
      }
-     
+
      class = object@classes
-     
+
      if (formating == "df"){ # dataframe with vars column give the variable
        if (object@algorithm == "No Split"){
-         for (l in 1:length(res)){ 
+         for (l in 1:length(res)){
            x  = res[[l]]
            ordre = x$order
            x =x$table
@@ -129,26 +135,26 @@ setMethod("dataconvert", "fusedanova",
                for (j in 1:(x$iup[i]-x$idown[i]+1)){
                  new = rbind(new, c(x$beta[i],x$lambda[i],x$slope[i],ordre[(x$idown[i]:x$iup[i])[j]],l))
                }
-             } 
+             }
            }
-         }         
+         }
        } else {
-         for (l in 1:length(res)){ 
+         for (l in 1:length(res)){
            x  = res[[l]]
            ordre = x$order
            x =x$table
            x$class = ordre[x$class]
            new = rbind(new,cbind(x,rep(l,nrow(x))))
-         } 
+         }
        }
-       
+
        new = as.data.frame(new)
        colnames(new) =c("beta","lambda","slope","class","vars")
        if (labels){new$class = as.factor(levels(class)[new$class])}
        new =unique(new[order(new[,"vars"], -new[,"lambda"], new[,"class"]), ])
-       
+
      } else if(formating == "list"){ # list : 1 element of list = one variable
-       
+
        if (object@algorithm == "No Split"){
          new = lapply(res, function(z){
            new = NULL
@@ -159,14 +165,14 @@ setMethod("dataconvert", "fusedanova",
                for (j in 1:(x$iup[i]-x$idown[i]+1)){
                  new = rbind(new, c(x$beta[i],x$lambda[i],x$slope[i],ordre[(x$iup[i]:x$idown[i])[j]]))
                }
-             } 
+             }
            }
            new = as.data.frame(new)
            colnames(new) =c("beta","lambda","slope","class")
            if (labels){new$class = as.factor(levels(class)[new$class])}
-           new = unique(new[order(-new[,"lambda"], new[,"class"]), ])		
+           new = unique(new[order(-new[,"lambda"], new[,"class"]), ])
          })
-         
+
        }else{
          new = lapply(res, function(z){
            new = NULL
@@ -176,11 +182,11 @@ setMethod("dataconvert", "fusedanova",
            if (labels){new$class = as.factor(levels(class)[new$class])}
            new = unique(new[order(-new[,"lambda"], new[,"class"]), ])
          })
-       }	
-     } 
-     
+       }
+     }
+
      ## matrix format, cost more, to do ???. <-----------------------
-     
+
      return(new)
 })
 
@@ -188,8 +194,8 @@ setMethod("dataconvert", "fusedanova",
 ##' Plot method for a fusedanova object
 ##'
 ##' Produce a plot of the solution path of a \code{fusedanova} fit.
-##' 
-##' @param x an object of class \code{fusedanova}. 
+##'
+##' @param x an object of class \code{fusedanova}.
 ##' @param y used for S4 compatibility.
 ##' @param main the main title, with a hopefully appropriate default definition.
 ##' @param xlab character or expression (or a "grob") giving label(s) for the x-axis.
@@ -200,7 +206,7 @@ setMethod("dataconvert", "fusedanova",
 ##' samples classed by fused-ANOVA. Default is \code{NULL}.
 ##' @param varvect a vector with the variables whose path will be plot. Default picks one at random.
 ##' @param ... used for S4 compatibility.
-##' 
+##'
 ##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
 ##' @name plot,fusedanova-method
@@ -216,17 +222,17 @@ setMethod("dataconvert", "fusedanova",
 ##'
 ##' @export
 setMethod("plot", "fusedanova", definition =
-plot.fused <- function(x, y,
+  function(x, y,
    main  = paste("The entire regularization path of optimal solutions for variable",varvect), # main title
    xlab = expression(paste("location in the regularization path  ",lambda)), # horizontal axis
    ylab = expression(paste("optimal coefficient  ",beta)), # vertical axis
    log.scale = TRUE,
    reverse   = FALSE,
-   labels    = NULL , 
+   labels    = NULL ,
    varvect   = sample(1:length(x@result),1), plot = TRUE, ...) {
-    
+
   df <- dataconvert(x)
-  
+
   if (log.scale) {
     epsilon = 10^-1
     lambdalist = unique(df$lambda[df$lambda!=0])
@@ -234,9 +240,9 @@ plot.fused <- function(x, y,
     df = predict(x,lambda=lambdalist)
     df$lambda <- log10(df$lambda)
   }
-  
+
   if (!is.null(varvect)){
-    df <- unique(subset(df, vars %in% varvect)[,c("beta","lambda","slope","class","vars")])
+    df <- unique(subset(df, df$vars %in% varvect)[,c("beta","lambda","slope","class","vars")])
     df$vars <- as.factor(paste("var.", df$vars))
   }
 
@@ -245,38 +251,38 @@ plot.fused <- function(x, y,
   } else {
     df$labels <- as.factor(df$class)
   }
-  
-  d <- ggplot(df,aes(x=lambda,y=beta, colour=labels, group=as.factor(class))) +
-    geom_line() + labs(x=xlab, y=ylab, title=main) + 
+
+  d <- ggplot(data=df,aes(x=lambda,y=beta, colour=labels, group=as.factor(class))) +
+    geom_line() + labs(x=xlab, y=ylab, title=main) +
       geom_hline(yintercept=0, alpha=0.5, linetype="dotted")  +
         scale_colour_discrete(guide = guide_legend(title = "Classification"))
-  
+
   if (reverse==TRUE) {
     d <- d + scale_x_reverse()
   }
-  
+
   if (is.null(labels) | nlevels(df$class) > 20) {
     d <- d + theme(legend.position="none")
   }
-  
+
   if (!is.null(varvect)){
     d <- d + facet_grid(.~vars)
   }
-  
+
   if (plot) {print(d)}
-  
+
   return(d)
 })
 
 ##' Predict method for a fusedanova object
 ##'
 ##' Produce a prediction for a vector of \code{lambda} parameter and an array of \code{class}.
-##' 
-##' @param object an object of class \code{fusedanova}. 
+##'
+##' @param object an object of class \code{fusedanova}.
 ##' @param y a vector of \code{class}. By default, \code{NULL}. If \code{NULL}, all classes
 ##' are predicted.
 ##' @param lambda a numeric vector giving the list of \eqn{\lambda}{lambda} for which to predict.
-##' By default, \code{NULL}. If \code{NULL}, it is set to the \code{lambdalist} slot 
+##' By default, \code{NULL}. If \code{NULL}, it is set to the \code{lambdalist} slot
 ##' of \code{object}. If this slot is empty, \code{lambda} is set to the fusion times detected in
 ##' the \code{fusedanova} function.
 ##'
@@ -292,11 +298,11 @@ plot.fused <- function(x, y,
 ##' data(aves)
 ##' fa <- fusedanova(x=aves$weight, class=aves$family, weight="laplace", gamma=5)
 ##' predict(fa, labels=aves$order)
-##' 
+##'
 ##' @export
 setMethod("predict", "fusedanova", definition =
 	function (object, y= NULL, lambda=NULL, labels = FALSE)  {
-	require(plyr) 	
+	require(plyr)
 	if (is.null(lambda)){ # no new grid
 		if (length(object@lambdalist)==0){ # no pred was asked when launching fused anova
 			d=dataconvert(object,labels =labels)
@@ -309,9 +315,9 @@ setMethod("predict", "fusedanova", definition =
 				d=subset(d,class %in% y)
 			}
 		}
-		
-	}else{ # linear interpolation 
-	  
+
+	}else{ # linear interpolation
+
 		res = dataconvert(object,labels=labels)
 		calc1 <- function(d){
 			dm <- merge(d,data.frame(lambda),all=TRUE)
@@ -322,12 +328,25 @@ setMethod("predict", "fusedanova", definition =
 		d <- ddply(res,.(class,vars),calc1)
 		lambdalist <- lambda
 		d <- unique(subset(d,lambda %in% lambdalist)[,c("beta","lambda","slope","class","vars")])
-	   
+
 		if (!is.null(y)){ # no new data
 			d=subset(d,class %in% y)
-		} 
+		}
 	}
 	d = d[order(-d[,"lambda"], d[,"class"]),]
 	return(d)
 })
 
+# function from Toby Hocking
+# complete the alpha dataframe in the predefine col
+# with linear interpolation
+fillin <- function (alpha, col)
+{
+  y <- alpha[, col]
+  na <- is.na(y)
+  x <- alpha$lambda
+  y[na] <- approx(x[!na], y[!na], x[na])$y
+  y[is.na(y)] <- rev(y[!na])[1]
+  alpha[, col] <- y
+  return(alpha)
+}

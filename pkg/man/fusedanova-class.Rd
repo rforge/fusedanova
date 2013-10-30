@@ -1,6 +1,9 @@
 \docType{class}
 \name{fusedanova-class}
 \alias{fusedanova-class}
+\alias{predict,fusedanovaquadrupen-method}
+\alias{print,fusedanova-method}
+\alias{show,fusedanova-method}
 \title{Class "fusedanova"}
 \description{
   Class of object returned by the fusedanova function.

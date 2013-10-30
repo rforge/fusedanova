@@ -1,7 +1,7 @@
 \docType{methods}
 \name{dataconvert,fusedanova-method}
-\alias{dataconvert.fusedanova}
 \alias{dataconvert,fusedanova-method}
+\alias{dataconvert.fusedanova}
 \title{Conversion method for a fusedanova object}
 \arguments{
   \item{object}{an object of class \code{fusedanova}.}

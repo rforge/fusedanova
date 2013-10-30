@@ -1,7 +1,7 @@
 \docType{methods}
 \name{plot,fusedanova-method}
-\alias{plot.fusedanova}
 \alias{plot,fusedanova-method}
+\alias{plot.fusedanova}
 \title{Plot method for a fusedanova object}
 \arguments{
   \item{x}{an object of class \code{fusedanova}.}
