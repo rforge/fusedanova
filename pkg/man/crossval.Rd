@@ -3,8 +3,8 @@
 \title{Cross-validation function for fusedanova method.}
 \usage{
   crossval(x, class, K = 10,
-    folds = split(sample(1:nrow(x)), rep(1:K, length = nrow(x))),
-    lambdalist = NULL, ...)
+    folds = split(sample(1:length(class)), rep(1:K, length = length(class))),
+    lambdalist = NULL, V = 1, ...)
 }
 \arguments{
   \item{x}{matrix whose rows represent individuals and
@@ -53,7 +53,9 @@
 }
 \examples{
 \dontrun{
-## Examples are not available right now.
+data(aves)
+cv.out <- crossval(aves$weight, aves$family, verbose=T)
+V100.cv.out <- crossval(aves$weight, aves$family, verbose=T, V=100)
 }
 }
 \seealso{

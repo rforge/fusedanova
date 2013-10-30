@@ -92,7 +92,15 @@
   The optimized criterion is the following:
 }
 \examples{
-## Not done yet.
+data(aves)
+fa.laplace <- fusedanova(x=aves$weight, class=aves$family, weights="laplace", gamma=5)
+plot(fa.laplace, labels=aves$order)
+
+fa.ttest <- fusedanova(x=aves$weight, class=aves$family, weights="naivettest")
+plot(fa.ttest, labels=aves$order)
+
+fa.ada <- fusedanova(x=aves$weight, class=aves$family, weights="adaptive", gamma=2)
+plot(fa.ada, labels=aves$order)
 }
 \seealso{
   See also \code{\linkS4class{fusedanova}},

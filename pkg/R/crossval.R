@@ -1,3 +1,45 @@
+V.K.folds.cv <- function(X,class, V=10,K=10,
+                         weights="default",gamma=0, min.ratio=5e-3,nlambda=50) {
+
+  nvar <- ncol(X)
+
+  firstrun   <- fusedanova(X, class, weights=weights,gamma=gamma)
+  lambdamax  <- max(unlist(lapply(firstrun@result, function(x) {max(x$table[, "lambda"])})))
+  lambdalist <- 10^seq(log10(min.ratio * lambdamax), log10(lambdamax), len = nlambda)
+
+  cat("\nAveraging ", V," ",K,"-folds cross-validation... might take a while!", sep="")
+  cv.list <- list()
+  for (v in 1:V) {
+    cat("\n\tv =",v)
+    cv.list[[v]] <- crossval(X,class,K=K, weights=weights,gamma=gamma,lambdalist=lambdalist)
+  }
+  
+  cv <- as.data.frame(apply(sapply(cv.list, function(l) { l@global$cv.error}), 1, simplify2array))
+  lb <- mean(sapply(cv.list, function(l) { l@global$lambda.min}))
+  cv <- data.frame(err=tapply(cv$err, cv$lambdalist, mean),
+                   sd =tapply(cv$sd, cv$lambdalist, function(x) sqrt(mean(x^2)/V)),
+                   lambdalist = lambdalist)
+  rownames(cv) <- 1:nrow(cv)
+  global <- list(cv.error= cv, lambda.min=lb)
+
+  CV <- lapply(1:nvar, function(i) {
+    cv <- as.data.frame(apply(sapply(cv.list, function(l) { l@byvariable[[i]]$cv.error}), 1, simplify2array))
+    lb <- mean(sapply(cv.list, function(l) { l@byvariable[[i]]$lambda.min}))
+    cv <- data.frame(err=tapply(cv$err, cv$lambdalist, mean),
+                     sd =tapply(cv$sd, cv$lambdalist, function(x) sqrt(mean(x^2)/V)),
+                     lambdalist = lambdalist)
+    rownames(cv) <- 1:nrow(cv)
+    return(list(cv.error= cv, lambda.min=lb))
+  })
+
+  return(new("cvfa",
+             byvariable = CV,
+             global     = global,
+             folds      =list(),
+             lambdalist =lambdalist))
+  
+}
+
 ##' Cross-validation function for fusedanova method.
 ##'
 ##' Function that computes K-fold cross-validated error of a
@@ -43,7 +85,9 @@
 ##' and \code{\linkS4class{cvfa}}.
 ##'
 ##' @examples \dontrun{
-##' ## Examples are not available right now. 
+##' data(aves)
+##' cv.out <- crossval(aves$weight, aves$family, verbose=T)
+##' V100.cv.out <- crossval(aves$weight, aves$family, verbose=T, V=100)
 ##' }
 ##'
 ##' @keywords models, regression
@@ -55,8 +99,9 @@
 crossval <- function(x,
                      class,
                      K = 10,
-		     folds= split(sample(1:nrow(x)), rep(1:K, length=nrow(x))),
+		     folds= split(sample(1:length(class)), rep(1:K, length=length(class))),
 			 lambdalist = NULL,
+                     V = 1,
 		     ...) {
 			 
 	## =============================================================
@@ -70,6 +115,8 @@ crossval <- function(x,
 		args$mc.cores <- 1 # Windows does not support fork
 	}
 	
+        if(!inherits(x, c("matrix", "Matrix")))
+          x <- as.matrix(x)
 	n <- length(class)
 	p <- ncol(x)
 	
@@ -130,10 +177,8 @@ crossval <- function(x,
 	
 	if (args$split==1){
 		algoType = "No Split"
-		if(args$verbose){print("Path calculated with path without split")}
-	}else{
+	} else{
 		algoType = "With possible Splits"
-		if(args$verbose){print("Path calculated with path with possible splits")}
 	}
 
 	one.fold <- function(k,z) {
@@ -143,42 +188,84 @@ crossval <- function(x,
 		return(err = err)
 	}	
 
-	# Errors contains a list of tables (rows <-> folds and col<-> lambdas) for each variable
-	Errors <- lapply(x,function(z){
-		err  <- do.call(rbind,mclapply(1:K, function(k){one.fold(k,z)}, mc.cores= args$mc.cores,
-										mc.preschedule=ifelse(K > 10,TRUE,FALSE)))
+        if (V > 1 & args$verbose) {
+          cat("\nAveraging ", V," ",K,"-folds cross-validation... might take a while!", sep="")
+          cat("\nV =")
+        } else {
+          cat("\n",K,"-folds cross-validation...", sep="")
+        }
+        
+        cv.list <- list()
+        global.list <- list()
+        folds.list <- list()
+        for (v in 1:V) {
+          if (V > 1 & args$verbose) {
+            cat(" ", v)
+          }
+
+          folds.list[[v]] <- folds
+          ## Errors contains a list of tables (rows <-> folds and col<-> lambdas) for each variable
+          Errors <- lapply(x,function(z){
+            err  <- do.call(rbind,mclapply(1:K, function(k){one.fold(k,z)}, mc.cores= args$mc.cores,
+                                           mc.preschedule=ifelse(K > 10,TRUE,FALSE)))
 		return(err)
-	})
+          })
 		
-	# CV return the mean of errors per fold and the std error. 
-	CV <- lapply(Errors,function(err){
-		err2 = err^2
-		meanerr <- colMeans(err)
-		meanerr2 <- colMeans(err2)
-		meanerr2 <- sqrt(1/(K-1)*(meanerr2 - meanerr^2)) # erreur sur la moyenne 
-		lambda.min = max(args$lambdalist[meanerr <= min(meanerr)])
-		# if several lambda.min, we take the higher lambda
-		return(list(cv.error = data.frame(err=meanerr,sd=meanerr2,lambdalist = args$lambdalist),
-					lambda.min=lambda.min))
-	})
-		
-	if (p>1){
-		err = aaply(laply(Errors,as.matrix),c(2,3),mean) # mean on all variables for each fold
-		err2 = err^2
-		meanerr <- colMeans(err)
-		meanerr2 <- colMeans(err2)
-		meanerr2 <- sqrt(1/(K-1)*(meanerr2 - meanerr^2))
-		lambda.min = max(args$lambdalist[meanerr <= min(meanerr)])		
-		global = list(cv.error = data.frame(err=meanerr,sd=meanerr2,
-						lambdalist = args$lambdalist),lambda.min=lambda.min) 
-	}else{
-		global=CV[[1]]
-	}
-	
+                                        # CV return the mean of errors per fold and the std error. 
+          CV <- lapply(Errors,function(err){
+            err2 = err^2
+            meanerr <- colMeans(err)
+            meanerr2 <- colMeans(err2)
+            meanerr2 <- sqrt(1/(K-1)*(meanerr2 - meanerr^2)) # erreur sur la moyenne 
+            lambda.min = max(args$lambdalist[meanerr <= min(meanerr)])
+                                        # if several lambda.min, we take the higher lambda
+            return(list(cv.error = data.frame(err=meanerr,sd=meanerr2,lambdalist = args$lambdalist),
+                        lambda.min=lambda.min))
+          })
+          
+          if (p>1){
+            err = aaply(laply(Errors,as.matrix),c(2,3),mean) # mean on all variables for each fold
+            err2 = err^2
+            meanerr <- colMeans(err)
+            meanerr2 <- colMeans(err2)
+            meanerr2 <- sqrt(1/(K-1)*(meanerr2 - meanerr^2))
+            lambda.min = max(args$lambdalist[meanerr <= min(meanerr)])		
+            global = list(cv.error = data.frame(err=meanerr,sd=meanerr2,
+                            lambdalist = args$lambdalist),lambda.min=lambda.min) 
+          }else{
+            global=CV[[1]]
+          }
+          global.list[[v]] <- global
+          cv.list[[v]] <- CV
+
+          ## new folds
+          folds <- split(sample(1:length(class)), rep(1:K, length=length(class)))                    
+        }
+
+        cv <- as.data.frame(apply(sapply(global.list, function(l) { l$cv.error}), 1, simplify2array))
+
+        lb <- mean(sapply(global.list, function(l) { l$lambda.min}))
+
+        cv <- data.frame(err=tapply(cv$err, cv$lambdalist, mean),
+                         sd =tapply(cv$sd, cv$lambdalist, function(x) sqrt(mean(x^2)/V)),
+                         lambdalist = args$lambdalist)
+        rownames(cv) <- 1:nrow(cv)
+        global <- list(cv.error= cv, lambda.min=lb)
+
+        CV <- lapply(1:p, function(i) {
+          cv <- as.data.frame(apply(sapply(cv.list, function(l) { l[[i]]$cv.error}), 1, simplify2array))
+          lb <- mean(sapply(cv.list, function(l) { l[[i]]$lambda.min}))
+          cv <- data.frame(err=tapply(cv$err, cv$lambdalist, mean),
+                           sd =tapply(cv$sd, cv$lambdalist, function(x) sqrt(mean(x^2)/V)),
+                           lambdalist = args$lambdalist)
+          rownames(cv) <- 1:nrow(cv)
+          return(list(cv.error= cv, lambda.min=lb))
+        })
+        
 	return(new("cvfa",
 			byvariable = CV,
 			global = global,
-			folds=folds,
+			folds  = ifelse(V == 1, folds, folds.list),
 			lambdalist =args$lambdalist,
 			algorithm = algoType))
 			
@@ -226,11 +313,11 @@ simplecv<-function(xtrain,ytrain,xtest,ytest,args){
 	# \sum_i{(\hat{Y_i}(\lambda)-Y_i)^2} = sum_k{ngroup(k)*(\hat{Y}_k - sum(Y_i in k))} + sum{Var(group_k)}
 	errVar = sum(xvtest)
 	
-	
+        args$verbose <- FALSE
 	if (args$splits==1){
-		errEst  <- .Call("noSplitcv",R_x=xm,R_xv=xv, R_ngroup=ngroup, R_xtest =xmtest, R_ngrouptest=ngrouptest, R_args=args, PACKAGE="fusedanova")
+          errEst  <- .Call("noSplitcv",R_x=xm,R_xv=xv, R_ngroup=ngroup, R_xtest =xmtest, R_ngrouptest=ngrouptest, R_args=args, PACKAGE="fusedanova")
 	}else{
-		errEst  <- .Call("Splitcv",R_x=xm,R_xv=xv, R_ngroup=ngroup, R_xtest =xmtest, R_ngrouptest=ngrouptest, R_args=args, PACKAGE="fusedanova")
+          errEst  <- .Call("Splitcv",R_x=xm,R_xv=xv, R_ngroup=ngroup, R_xtest =xmtest, R_ngrouptest=ngrouptest, R_args=args, PACKAGE="fusedanova")
 	}
 	
 	errEst = errEst + errVar 
@@ -250,7 +337,8 @@ normalize.cv <- function(x,group,omit){
 	}else{ 
 		ntrain = length(xtrain)
 		m  = mean(xtrain)
-        ngrouptrain = tabulate(grouptrain)
+                ngrouptrain = tabulate(grouptrain)
+                ngrouptrain = ngrouptrain[ngrouptrain != 0]
 		s = rowsum(xtrain^2,grouptrain) - (1/ngrouptrain)*(rowsum(xtrain,grouptrain))^2
 		s[which(ngrouptrain==1)]=0
 		if (sum(s)==0){

@@ -1,7 +1,7 @@
 \docType{methods}
 \name{plot,cvfa-method}
-\alias{plot,cvfa-method}
 \alias{plot.cvfa}
+\alias{plot,cvfa-method}
 \title{Plot method for cross validated error of a \code{fusedanova} model}
 \arguments{
   \item{x}{output of a \code{crossval} run (must be of

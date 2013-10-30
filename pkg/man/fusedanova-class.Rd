@@ -22,8 +22,11 @@
 
   } }
 
-  \item{\code{classes}: }{the intitulate of the classes as
-  entered in the \code{class} parameter in the
+  \item{\code{weights}: }{the weights used t eprform the
+  fit.}
+
+  ' \item{\code{classes}: }{the intitulate of the classes
+  as entered in the \code{class} parameter in the
   \code{fusedanova} function.}
 
   \item{\code{prediction}: }{if a \code{lambdalist} was
@@ -34,6 +37,9 @@
   \item{\code{lambdalist}: }{the \code{lambdalist} vector
   parameter given in the \code{fusedanova} function. If not
   given, empty vector.}
+
+  \item{\code{algorithm}: }{a character string indicating
+  wether splits where allowed or not.}
 
   }
 }

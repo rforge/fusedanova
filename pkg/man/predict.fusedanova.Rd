@@ -1,7 +1,7 @@
 \docType{methods}
 \name{predict,fusedanova-method}
-\alias{predict,fusedanova-method}
 \alias{predict.fusedanova}
+\alias{predict,fusedanova-method}
 \title{Predict method for a fusedanova object}
 \arguments{
   \item{object}{an object of class \code{fusedanova}.}
@@ -21,9 +21,9 @@
   parameter and an array of \code{class}.
 }
 \examples{
-\dontrun{
-## Not done yet
-}
+data(aves)
+fa <- fusedanova(x=aves$weight, class=aves$family, weight="laplace", gamma=5)
+predict(fa, labels=aves$order)
 }
 \seealso{
   \code{\linkS4class{fusedanova}}.

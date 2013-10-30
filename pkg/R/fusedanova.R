@@ -81,12 +81,17 @@
 ##' @keywords models, regression
 ##'
 ##' @examples
-##' ## Not done yet.
-##'
+##' data(aves)
+##' fa.laplace <- fusedanova(x=aves$weight, class=aves$family, weights="laplace", gamma=5)
+##' plot(fa.laplace, labels=aves$order)
+##' 
+##' fa.ttest <- fusedanova(x=aves$weight, class=aves$family, weights="naivettest")
+##' plot(fa.ttest, labels=aves$order)
+##' 
+##' fa.ada <- fusedanova(x=aves$weight, class=aves$family, weights="adaptive", gamma=2)
+##' plot(fa.ada, labels=aves$order)
+##' 
 ##' @export
-#############################
-# Principal function ########
-#############################
 fusedanova <- function(x,class,...) {
 
 	## ===================================================
@@ -101,12 +106,13 @@ fusedanova <- function(x,class,...) {
 	
 	## ===================================================
 	## CHECKS TO (PARTIALLY) AVOID CRASHES OF THE C++ CODE
+        if(!inherits(x, c("matrix", "Matrix")))
+          x <- as.matrix(x)
 	p <- ncol(x) # problem size
 	n <- nrow(x) # sample size
 
 	if (args$checkargs) {
-	
-		if(!inherits(x, c("matrix", "Matrix")))
+                if(!inherits(x, c("matrix", "Matrix")))
 			stop("x has to be of class 'matrix'.")
 		if(any(is.na(x)))
 			stop("NA value in x not allowed.")
@@ -159,8 +165,8 @@ fusedanova <- function(x,class,...) {
 	}
 	
 	result = mclapply(x,function(z) {calculatepath(z,class,args)},
-						mc.cores= args$mc.cores, mc.preschedule=ifelse(p > 100,TRUE,FALSE)) # path algorithm 
-
+          mc.cores= args$mc.cores, mc.preschedule=ifelse(p > 100,TRUE,FALSE)) # path algorithm 
+        
 	if (length(args$lambdalist) == 0){ # default parameter
 		l = numeric(0)
 		prediction =  list()
@@ -175,7 +181,7 @@ fusedanova <- function(x,class,...) {
 	if (args$standardize==TRUE && abs(result[[1]]$table[1,1])>10^(-8)){
 	warning("There may be some approximation errors (Beta(lambda_max) far from 0). You may want to lower the gamma if you are using one.")} 
  
-	return(new("fusedanova",result=result, prediction=prediction, classes = class, lambdalist=l,algorithm=algoType))
+	return(new("fusedanova",result=result, prediction=prediction, classes = class, weights=args$weights, lambdalist=l,algorithm=algoType))
 
 }
 

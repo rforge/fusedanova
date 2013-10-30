@@ -1,7 +1,7 @@
 \docType{methods}
 \name{dataconvert,fusedanova-method}
-\alias{dataconvert,fusedanova-method}
 \alias{dataconvert.fusedanova}
+\alias{dataconvert,fusedanova-method}
 \title{Conversion method for a fusedanova object}
 \arguments{
   \item{object}{an object of class \code{fusedanova}.}
@@ -18,16 +18,16 @@
   \item{...}{used for S4 compatibility.}
 }
 \description{
-  Produce for each object (dataframe, vector of oreder,
+  Produce for each object (dataframe, vector of oeder,
   vector of class) in the list of \code{result} or
   \code{prediction} (if \code{predicted} == \code{TRUE}) a
   new dataframe containing for each fusion the
   \code{lambda}, \code{beta}, \code{slope}, \code{class}.
 }
 \examples{
-\dontrun{
-## Not done yet
-}
+data(aves)
+fa <- fusedanova(x=aves$weight, class=aves$family)
+dataconvert(fa)
 }
 \seealso{
   \code{\linkS4class{fusedanova}}.
