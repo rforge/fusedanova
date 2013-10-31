@@ -1,18 +1,18 @@
 \docType{methods}
-\name{plot,cvfa-method}
-\alias{plot,cvfa-method}
-\alias{plot.cvfa}
+\name{plot,cv.fa-method}
+\alias{plot,cv.fa-method}
+\alias{plot.cv.fa}
 \title{Plot method for cross validated error of a \code{fusedanova} model}
 \arguments{
   \item{x}{output of a \code{crossval} run (must be of
-  class \code{cvfa}).}
+  class \code{cv.fa}).}
 
   \item{y}{used for S4 compatibility.}
 
   \item{varvect}{integer vector; give the index of all
   variables to plot separately. By default, varvect is NULL
   and the plot returns the plot of the \code{global}
-  attribute of a \code{cvfa} instance.}
+  attribute of a \code{cv.fa} instance.}
 
   \item{plotting}{logical; indicates if the graph should be
   plotted. Default is \code{TRUE}.}
@@ -33,10 +33,9 @@
   \item{...}{used for S4 compatibility.}
 }
 \value{
-  a \pkg{ggplot2} object which can be plotted via the
-  \code{print} method if no list of variable was given or a
-  list of \pkg{ggplot2} object which can be plotted via the
-  \code{multiplot} function.
+  a \pkg{ggplot2} object or a list of \pkg{ggplot2} objects
+  (if a list of variable was provided) which can be plotted
+  via the \code{print} method
 }
 \description{
   Produce a plot of the cross validated error of a
@@ -44,7 +43,14 @@
 }
 \examples{
 \dontrun{
-#Not done yet
+data(aves)
+cv.out <- cv.fa(aves$weight, aves$family)
+V100.cv.out <- cv.fa(aves$weight, aves$family, V=50)
+plot(cv.out)
+plot(V100.cv.out)
 }
+}
+\seealso{
+  \code{\linkS4class{cv.fa}}.
 }
 

@@ -6,7 +6,8 @@
 \alias{show,fusedanova-method}
 \title{Class "fusedanova"}
 \description{
-  Class of object returned by the fusedanova function.
+  Class of object returned by the \code{fusedanova}
+  function.
 }
 \section{Slots}{
   \describe{

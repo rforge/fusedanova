@@ -1,7 +1,9 @@
 ##' Cross-validation function for fusedanova method.
 ##'
 ##' Function that computes K-fold cross-validated error of a
-##' \code{fusedanova} fit.
+##' \code{fusedanova} fit. Possibility to perform V times the whole
+##' K-fold CV to average the error and reduce the reduce the CV
+##' standard error around the minimum.
 ##'
 ##' @param x matrix whose rows represent individuals and columns
 ##' independant variables.
@@ -12,6 +14,8 @@
 ##'
 ##' @param V integer indicating the number of times the K folds CV
 ##' will be averaged. Default is 1 (no averaging).
+##'
+##' @param verbose boolean for verbose mode. Default is \code{TRUE}.
 ##'
 ##' @param folds list of \code{K} vectors that describes the folds to
 ##' use for the cross-validation. By default, the folds are randomly
@@ -39,31 +43,32 @@
 ##'	}
 ##' }
 ##'
-##' @return An object of class "cvfa" for which a \code{plot} method
+##' @return An object of class "cv.fa" for which a \code{plot} method
 ##' is available.
 ##'
-##' @seealso \code{\linkS4class{fusedanova}}, \code{\link{plot.cvfa}}
-##' and \code{\linkS4class{cvfa}}.
+##' @seealso \code{\linkS4class{fusedanova}}, \code{\link{plot.cv.fa}}
+##' and \code{\linkS4class{cv.fa}}.
 ##'
 ##' @examples \dontrun{
 ##' data(aves)
-##' cv.out <- crossval(aves$weight, aves$family, verbose=T)
-##' V100.cv.out <- crossval(aves$weight, aves$family, verbose=T, V=100)
+##' cv.out <- cv.fa(aves$weight, aves$family)
+##' V100.cv.out <- cv.fa(aves$weight, aves$family, V=50)
 ##' }
 ##'
 ##' @keywords models, regression
-##' @name crossval
-##' @aliases crossval
-##' @rdname crossval
+##' @name cv.fa
+##' @aliases cv.fa
+##' @rdname cv.fa
 ##'
 ##' @export
-crossval <- function(x,
-                     class,
-                     K = 10,
-		     folds= split(sample(1:length(class)), rep(1:K, length=length(class))),
-			 lambdalist = NULL,
-                     V = 1,
-		     ...) {
+cv.fa <- function(x,
+                  class,
+                  K = 10,
+                  folds= split(sample(1:length(class)), rep(1:K, length=length(class))),
+                  lambdalist = NULL,
+                  V = 1,
+                  verbose = TRUE,
+                  ...) {
 
 	## =============================================================
 	## INITIALIZATION & PARAMETERS RECOVERY
@@ -93,8 +98,8 @@ crossval <- function(x,
 		if(!(args$weights %in% possibleWeights))
 		  stop("Unknown weight parameter formulation. Aborting.")
 		if (Sys.info()[['sysname']] == "Windows") {
-			if(args$verbose){
-				warning("\nWindows does not support fork, enforcing mc.cores to '1'.")
+			if(verbose){
+                          warning("\nWindows does not support fork, enforcing mc.cores to '1'.")
 			}
 		}
 		args$checkargs = FALSE # not to check again in fused anova first call
@@ -149,7 +154,7 @@ crossval <- function(x,
 		return(err = err)
 	}
 
-        if (V > 1 & args$verbose) {
+        if (V > 1 & verbose) {
           cat("\nAveraging ", V," ",K,"-folds cross-validation... might take a while!", sep="")
           cat("\nV =")
         } else {
@@ -160,7 +165,7 @@ crossval <- function(x,
         global.list <- list()
         folds.list <- list()
         for (v in 1:V) {
-          if (V > 1 & args$verbose) {
+          if (V > 1 & verbose) {
             cat(" ", v)
           }
 
@@ -223,7 +228,7 @@ crossval <- function(x,
           return(list(cv.error= cv, lambda.min=lb))
         })
 
-	return(new("cvfa",
+	return(new("cv.fa",
 			byvariable = CV,
 			global = global,
 			folds  = ifelse(V == 1, folds, folds.list),
@@ -274,7 +279,6 @@ simplecv<-function(xtrain,ytrain,xtest,ytest,args){
 	# \sum_i{(\hat{Y_i}(\lambda)-Y_i)^2} = sum_k{ngroup(k)*(\hat{Y}_k - sum(Y_i in k))} + sum{Var(group_k)}
 	errVar = sum(xvtest)
 
-        args$verbose <- FALSE
 	if (args$splits==1){
           errEst  <- .Call("noSplitcv",R_x=xm,R_xv=xv, R_ngroup=ngroup, R_xtest =xmtest, R_ngrouptest=ngrouptest, R_args=args, PACKAGE="fusedanova")
 	}else{

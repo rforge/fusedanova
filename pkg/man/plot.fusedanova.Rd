@@ -37,11 +37,15 @@
   \code{fusedanova} fit.
 }
 \examples{
+\dontrun{
 data(aves)
 fa.laplace <- fusedanova(x=aves$weight, class=aves$family, weights="laplace", gamma=5)
 plot(fa.laplace, labels=aves$order)
 }
+}
 \seealso{
+  \code{\linkS4class{fusedanova}}.
+
   \code{\linkS4class{fusedanova}}.
 }
 

@@ -1,6 +1,6 @@
 ##' Class "fusedanova"
 ##'
-##' Class of object returned by the fusedanova function.
+##' Class of object returned by the \code{fusedanova} function.
 ##'
 ##' @section Slots: \describe{
 ##'
@@ -83,29 +83,35 @@ setMethod("show", "fusedanova", definition =
 
 ##' Conversion method for a fusedanova object
 ##'
-##' Produce for each object (dataframe, vector of oeder, vector of class) in the list of
-##' \code{result} or \code{prediction} (if \code{predicted} == \code{TRUE}) a new dataframe
-##' containing for each fusion the \code{lambda}, \code{beta}, \code{slope}, \code{class}.
+##' Convert the compressed fused-ANOVA path to a more handy but more
+##' memory demanding data.frame format. This is typically used for
+##' plotting purposes.
 ##'
 ##' @param object an object of class \code{fusedanova}.
-##' @param predicted logical; if \code{TRUE}, the return is calculated on the \code{result} slot,
-##'  else on the \code{prediction} slot. By default, \code{FALSE}.
-##' @param listformat logical; does the return should be a list of dataframes for each variable
-##' or only one dataframe with one more column indexing the variables. By default, \code{FALSE}.
+##' @param predicted logical; if \code{TRUE}, the return value expands
+##' the \code{result} slot of the original \code{fusedanova}
+##' object. Otherwise, the \code{prediction} slot is
+##' explanded. Default is \code{FALSE}.
+##' @param listformat logical; does the return value should be a list
+##' of dataframes for each variable or only one dataframe with an
+##' additional column indexing the variables. By default,
+##' \code{FALSE}.
 ##' @param ... used for S4 compatibility.
-##'
-##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
 ##' @name dataconvert,fusedanova-method
 ##' @aliases dataconvert,fusedanova-method
 ##' @aliases dataconvert.fusedanova
+##' @aliases dataconvert
 ##' @docType methods
 ##' @rdname dataconvert.fusedanova
 ##'
-##' @examples
+##' @seealso \code{\linkS4class{fusedanova}}.
+##'
+##' @examples \dontrun{
 ##' data(aves)
 ##' fa <- fusedanova(x=aves$weight, class=aves$family)
 ##' dataconvert(fa)
+##' }
 ##'
 ##' @exportMethod dataconvert
 setGeneric ( name= "dataconvert",
@@ -214,11 +220,13 @@ setMethod("dataconvert", "fusedanova",
 ##' @aliases plot.fusedanova
 ##' @docType methods
 ##' @rdname plot.fusedanova
+##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
-##' @examples
+##' @examples \dontrun{
 ##' data(aves)
 ##' fa.laplace <- fusedanova(x=aves$weight, class=aves$family, weights="laplace", gamma=5)
 ##' plot(fa.laplace, labels=aves$order)
+##' }
 ##'
 ##' @export
 setMethod("plot", "fusedanova", definition =
@@ -302,7 +310,6 @@ setMethod("plot", "fusedanova", definition =
 ##' @export
 setMethod("predict", "fusedanova", definition =
 	function (object, y= NULL, lambda=NULL, labels = FALSE)  {
-	require(plyr)
 	if (is.null(lambda)){ # no new grid
 		if (length(object@lambdalist)==0){ # no pred was asked when launching fused anova
 			d=dataconvert(object,labels =labels)

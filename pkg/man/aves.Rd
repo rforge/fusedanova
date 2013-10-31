@@ -1,24 +1,18 @@
 \docType{data}
 \name{aves}
 \alias{aves}
-\title{Aves data set: give birth weights two levels of phylogenetic classifications}
-\format{A dataframe with 184 rows with three columns
-
- \describe{
-\item{"weight"}{a numeric vector: weights in gramme.}
-
-\item{"family"}{a factor with 40 levels: the bird family.}
-
-\item{"order"}{a factor with 15 levels: the bird order.}
-
-}}
-\source{
-  http://genomics.senescence.info/species/
-}
+\title{Birth weight of birds with two levels of phylogenetic classification}
+\format{A dataframe with 184 rows with three columns: "weight"
+(the weight in grammes), "family" (a factor with 40 levels) and
+"order" (a factor with 15 levels).}
 \description{
-  This data set gives the birth weight of for $40$ bird
-  families classified in $15$ orders and regrouping a total
-  of $n=184$ individuals.
+  This data set gives the birth weight of for 40 bird
+  families classified in 15 orders and regrouping a total
+  of 184 individuals.
+}
+\references{
+  An Age: The Animal Ageing and Longevity Database,
+  \href{http://genomics.senescence.info/species/}{http://genomics.senescence.info/species/}
 }
 \keyword{datasets}
 
