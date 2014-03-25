@@ -2,14 +2,15 @@
 \alias{fusedanova}
 \title{Fit a Fused ANOVA model}
 \usage{
-  fusedanova(x, class, ...)
+fusedanova(x, class, ...)
 }
 \arguments{
-  \item{x}{matrix which rows represent individuals and
-  columns independant variables.}
+  \item{x}{matrix (or column vector) which rows represent
+  individuals and columns independant variables.}
 
   \item{class}{vector or factor giving the class of each
-  individual.}
+  individual. If missing, \code{1:nrow(x)} is used
+  (clustering mode with one individual per class).}
 
   \item{...}{list of additional parameters to overwrite the
   defaults of the fitting procedure. Include : \itemize{%
@@ -78,39 +79,39 @@
   }}
 }
 \value{
-  an object with class \code{fusedanova}, see the
-  documentation page \code{\linkS4class{fusedanova}} for
-  details.
+an object with class \code{fusedanova}, see the
+documentation page \code{\linkS4class{fusedanova}} for
+details.
 
-  The optimization problem solved by fused-ANOVA is
-  \if{latex}{\deqn{% \hat{\beta}_{\lambda} = \arg
-  \min_{\beta} \left\{\sum_{k=1}^K \sum_{i=1}^{n_k}
-  \left(Y_{ik}-\beta_k \right)^2 + \lambda \sum_{k,\ell}
-  w_{kl} \left|\beta_k - \beta_\ell \right|\right\}}}
-  \if{html}{\out{ <center> &beta;<sup>hat</sup>
-  <sub>&lambda;<sub>1</sub></sub> = argmin<sub>&beta;</sub>
-  sum<sub>k</sub> sum_i (Y<sub>ik</sub> -
-  &beta<sub>k</sub>)<sup>2</sup> + &lambda;
-  sum<sub>k,l</sub> w<sub>k,l</sub> &#124;
-  &beta;<sub>k</sub> - &beta;<sub>l</sub> &#124;, </center>
-  }} \if{text}{\deqn{beta.hat(lambda) = argmin_beta sum_k
-  sum_i (Y_ik - beta_k)^2 + lambda sum_k sum_l w_kl |
-  beta_k - beta_l|,}}
+The optimization problem solved by fused-ANOVA is
+\if{latex}{\deqn{% \hat{\beta}_{\lambda} = \arg
+\min_{\beta} \left\{\sum_{k=1}^K \sum_{i=1}^{n_k}
+\left(Y_{ik}-\beta_k \right)^2 + \lambda \sum_{k,\ell}
+w_{kl} \left|\beta_k - \beta_\ell \right|\right\}}}
+\if{html}{\out{ <center> &beta;<sup>hat</sup>
+<sub>&lambda;<sub>1</sub></sub> = argmin<sub>&beta;</sub>
+sum<sub>k</sub> sum_i (Y<sub>ik</sub> -
+&beta<sub>k</sub>)<sup>2</sup> + &lambda; sum<sub>k,l</sub>
+w<sub>k,l</sub> &#124; &beta;<sub>k</sub> -
+&beta;<sub>l</sub> &#124;, </center> }}
+\if{text}{\deqn{beta.hat(lambda) = argmin_beta sum_k sum_i
+(Y_ik - beta_k)^2 + lambda sum_k sum_l w_kl | beta_k -
+beta_l|,}}
 
-  where \eqn{Y_{ik}}{Y_ik} is the intensity of a continuous
-  random variable for sample \eqn{i}{i} in condition
-  \eqn{k}{k} and \eqn{\beta_k}{beta_k} is the mean
-  parameter of condition \eqn{k}{k}. We denote by
-  \eqn{K}{K} the total number of conditions and
-  \eqn{n_k}{n_k} the number of sample in each condition.
+where \eqn{Y_{ik}}{Y_ik} is the intensity of a continuous
+random variable for sample \eqn{i}{i} in condition
+\eqn{k}{k} and \eqn{\beta_k}{beta_k} is the mean parameter
+of condition \eqn{k}{k}. We denote by \eqn{K}{K} the total
+number of conditions and \eqn{n_k}{n_k} the number of
+sample in each condition.
 
-  More details related to the weights are coming...
+More details related to the weights are coming...
 }
 \description{
-  Adjust a penalized ANOVA model with Fused-LASSO (or Total
-  Variation) penality, ie. a sum of weighted
-  \eqn{\ell_1}{l1}-norm on the difference of each
-  coefficient. See details below.
+Adjust a penalized ANOVA model with Fused-LASSO (or Total
+Variation) penality, ie. a sum of weighted
+\eqn{\ell_1}{l1}-norm on the difference of each
+coefficient. See details below.
 }
 \examples{
 \dontrun{
@@ -126,8 +127,9 @@ plot(fa.ada, labels=aves$order)
 }
 }
 \seealso{
-  See also \code{\linkS4class{fusedanova}},
-  \code{\link{plot.fusedanova}} and \code{\link{cv.fa}}.
+See also \code{\linkS4class{fusedanova}},
+\code{\link{plot,fusedanova-method}} and
+\code{\link{cv.fa}}.
 }
 \keyword{models,}
 \keyword{regression}

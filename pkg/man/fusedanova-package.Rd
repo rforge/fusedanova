@@ -3,17 +3,17 @@
 \alias{fusedanova-package}
 \title{Fused-ANOVA package: general presentation}
 \description{
-  This package is designed to fit accurately the
-  Fused-ANOVA model, a penalized method to solve the
-  one-way ANOVA problem by collapsing the coefficients of
-  \eqn{K}{K} conditions.  For a large class of weights
-  implemented here, our homotopy algorithm is in
-  \eqn{\mathcal{O}(K\log(K))}{O(klog(K))}.  These weights
-  induce a balanced tree structure and simplify the
-  interpretation of the results. The package contains an
-  illustrating phenotypic data set: given a trait, we
-  reconstruct a balanced tree structure and assess its
-  agreement with the known phylogeny.
+This package is designed to fit accurately the Fused-ANOVA
+model, a penalized method to solve the one-way ANOVA
+problem by collapsing the coefficients of \eqn{K}{K}
+conditions.  For a large class of weights implemented here,
+our homotopy algorithm is in
+\eqn{\mathcal{O}(K\log(K))}{O(klog(K))}.  These weights
+induce a balanced tree structure and simplify the
+interpretation of the results. The package contains an
+illustrating phenotypic data set: given a trait, we
+reconstruct a balanced tree structure and assess its
+agreement with the known phylogeny.
 }
 \section{Problem solved}{
   The optimization problem solved by fused-ANOVA is
@@ -95,16 +95,16 @@
   not available for Windows user, though.
 }
 \author{
-  Pierre Gutierrez, Julien Chiquet, Guillem Rigaill.
+Pierre Gutierrez, Julien Chiquet, Guillem Rigaill.
 }
 \references{
-  Fused-ANOVA: shortly coming
+Fused-ANOVA: shortly coming
 
-  H. Hoefling. A path algorithm for the fused lasso signal
-  approximator, technical report, arXiv, 2010.
+H. Hoefling. A path algorithm for the fused lasso signal
+approximator, technical report, arXiv, 2010.
 
-  T. Hocking, J.-P. Vert, F. Bach, and A. Joulin.
-  Clusterpath: an Algorithm for Clustering using Convex
-  Fusion Penalties, ICML, 2011.
+T. Hocking, J.-P. Vert, F. Bach, and A. Joulin.
+Clusterpath: an Algorithm for Clustering using Convex
+Fusion Penalties, ICML, 2011.
 }
 

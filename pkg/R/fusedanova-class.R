@@ -34,28 +34,24 @@
 ##'
 ##' @section Methods:
 ##' Specific plotting, predict and conversion methods are available and documented
-##' (\code{\link{plot.fusedanova}}, \code{\link{predict.fusedanova}},
-##' \code{\link{dataconvert.fusedanova}}).
+##' (\code{\link{plot,fusedanova-method}}, \code{\link{predict,fusedanova-method}},
+##' \code{\link{dataconvert,fusedanova-method}}).
 ##'
-##' @aliases predict,fusedanovaquadrupen-method
-##' print,fusedanova-method show,fusedanova-method
+##' @aliases print,fusedanova-method show,fusedanova-method
 ##'
 ##' @docType class
 ##'
 ##' @keywords class
 ##'
-##' @seealso See also \code{\link{plot.fusedanova}}, \code{\link{predict.fusedanova}}
-##' \code{\link{dataconvert.fusedanova}} and \code{\link{fusedanova}}.
+##' @seealso See also \code{\link{plot,fusedanova-method}}, \code{\link{predict,fusedanova-method}}
+##' \code{\link{dataconvert,fusedanova-method}} and \code{\link{fusedanova}}.
 ##'
 ##' @name fusedanova-class
 ##' @rdname fusedanova-class
 ##'
 ##' @exportClass fusedanova
-##' @exportMethod predict
 ##' @exportMethod print
 ##' @exportMethod show
-##'
-##' @importFrom stats predict
 ##'
 setClass("fusedanova",
 	representation = representation(
@@ -87,31 +83,33 @@ setMethod("show", "fusedanova", definition =
 ##' memory demanding data.frame format. This is typically used for
 ##' plotting purposes.
 ##'
+##' @usage \\S4method{dataconvert}{fusedanova}(object, predicted=FALSE,
+##'                   formating = c("df","list")[1], labels=FALSE, ...)
 ##' @param object an object of class \code{fusedanova}.
 ##' @param predicted logical; if \code{TRUE}, the return value expands
 ##' the \code{result} slot of the original \code{fusedanova}
 ##' object. Otherwise, the \code{prediction} slot is
 ##' explanded. Default is \code{FALSE}.
-##' @param listformat logical; does the return value should be a list
-##' of dataframes for each variable or only one dataframe with an
-##' additional column indexing the variables. By default,
-##' \code{FALSE}.
+##' @param formating a string, either \code{"list"} or \code{"df"}:
+##' does the return value should be a list of dataframes for each
+##' variable or only one dataframe with an additional column indexing
+##' the variables. By default, \code{"df"}.
+##' @param labels logical. Should the labels be sent back. Default is \code{FALSE}.
 ##' @param ... used for S4 compatibility.
 ##'
-##' @name dataconvert,fusedanova-method
+##' @name dataconvert
 ##' @aliases dataconvert,fusedanova-method
 ##' @aliases dataconvert.fusedanova
 ##' @aliases dataconvert
 ##' @docType methods
-##' @rdname dataconvert.fusedanova
+##' @rdname dataconvert
 ##'
 ##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
-##' @examples \dontrun{
+##' @examples 
 ##' data(aves)
 ##' fa <- fusedanova(x=aves$weight, class=aves$family)
 ##' dataconvert(fa)
-##' }
 ##'
 ##' @exportMethod dataconvert
 setGeneric ( name= "dataconvert",
@@ -201,6 +199,12 @@ setMethod("dataconvert", "fusedanova",
 ##'
 ##' Produce a plot of the solution path of a \code{fusedanova} fit.
 ##'
+##' @usage \\S4method{plot}{fusedanova}(x, y,
+##' main=paste("Regularization path for variable",varvect),
+##' xlab = expression(paste("location in the regularization path  ",lambda)),
+##' ylab = expression(paste("optimal coefficient  ",beta)),
+##' log.scale = TRUE, reverse   = FALSE, labels    = NULL ,
+##' varvect = sample(1:length(slot(x,"result")),1), plot = TRUE, ...)
 ##' @param x an object of class \code{fusedanova}.
 ##' @param y used for S4 compatibility.
 ##' @param main the main title, with a hopefully appropriate default definition.
@@ -211,10 +215,15 @@ setMethod("dataconvert", "fusedanova",
 ##' @param labels a vector of factor with labels associated to n
 ##' samples classed by fused-ANOVA. Default is \code{NULL}.
 ##' @param varvect a vector with the variables whose path will be plot. Default picks one at random.
+##' @param plot logical; indicates if the graph should be plotted on
+##' call. Default is \code{TRUE}.
 ##' @param ... used for S4 compatibility.
 ##'
 ##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
+##' @return a \pkg{ggplot2} object which can be plotted via the \code{print} method.
+##' @seealso \code{\linkS4class{fusedanova}}.
+##' 
 ##' @name plot,fusedanova-method
 ##' @aliases plot,fusedanova-method
 ##' @aliases plot.fusedanova
@@ -222,24 +231,22 @@ setMethod("dataconvert", "fusedanova",
 ##' @rdname plot.fusedanova
 ##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
-##' @examples \dontrun{
+##' @examples 
 ##' data(aves)
 ##' fa.laplace <- fusedanova(x=aves$weight, class=aves$family, weights="laplace", gamma=5)
 ##' plot(fa.laplace, labels=aves$order)
-##' }
 ##'
+##' @exportMethod plot
 ##' @export
 setMethod("plot", "fusedanova", definition =
-  function(x, y,
-   main  = paste("The entire regularization path of optimal solutions for variable",varvect), # main title
-   xlab = expression(paste("location in the regularization path  ",lambda)), # horizontal axis
-   ylab = expression(paste("optimal coefficient  ",beta)), # vertical axis
-   log.scale = TRUE,
-   reverse   = FALSE,
-   labels    = NULL ,
-   varvect   = sample(1:length(x@result),1), plot = TRUE, ...) {
-
-  df <- dataconvert(x)
+          function(x, y,
+                   main=paste("Regularization path for variable",varvect),
+                   xlab = expression(paste("location in the regularization path  ",lambda)),
+                   ylab = expression(paste("optimal coefficient  ",beta)),
+                   log.scale = TRUE, reverse   = FALSE, labels    = NULL ,
+                   varvect = sample(1:length(slot(x,"result")),1), plot = TRUE, ...) {
+             
+    df <- dataconvert(x)
 
   if (log.scale) {
     epsilon = 10^-1
@@ -286,6 +293,7 @@ setMethod("plot", "fusedanova", definition =
 ##'
 ##' Produce a prediction for a vector of \code{lambda} parameter and an array of \code{class}.
 ##'
+##' @usage \\S4method{predict}{fusedanova}(object, y= NULL, lambda=NULL, labels = FALSE)
 ##' @param object an object of class \code{fusedanova}.
 ##' @param y a vector of \code{class}. By default, \code{NULL}. If \code{NULL}, all classes
 ##' are predicted.
@@ -293,7 +301,7 @@ setMethod("plot", "fusedanova", definition =
 ##' By default, \code{NULL}. If \code{NULL}, it is set to the \code{lambdalist} slot
 ##' of \code{object}. If this slot is empty, \code{lambda} is set to the fusion times detected in
 ##' the \code{fusedanova} function.
-##'
+##' @param labels logical. Kepp the labels or not.
 ##' @seealso \code{\linkS4class{fusedanova}}.
 ##'
 ##' @name predict,fusedanova-method
@@ -307,6 +315,7 @@ setMethod("plot", "fusedanova", definition =
 ##' fa <- fusedanova(x=aves$weight, class=aves$family, weight="laplace", gamma=5)
 ##' predict(fa, labels=aves$order)
 ##'
+##' @importFrom stats predict
 ##' @export
 setMethod("predict", "fusedanova", definition =
 	function (object, y= NULL, lambda=NULL, labels = FALSE)  {

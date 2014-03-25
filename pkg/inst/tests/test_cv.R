@@ -104,11 +104,11 @@ test_that("Consistency between fusedanova cross-validation and a cv by hand", {
   folds <- split(sample(1:n), rep(1:K, length = n))
   
   # no split
-  cvfa  <- crossval(Y,class,folds=folds,weights=weights,gamma=gamma)
+  cvfa  <- cv.fa(Y,class,folds=folds,weights=weights,gamma=gamma)
   check <- cv.check(Y,class,folds=folds,weights=weights,gamma=gamma)
   
   # with possible splits
-  cvfa2  <- crossval(Y,class,folds=folds,weights="naivettest")
+  cvfa2  <- cv.fa(Y,class,folds=folds,weights="naivettest")
   check2 <- cv.check(Y,class,folds=folds,weights="naivettest") 
   
   # test if same error and sd for each lambda

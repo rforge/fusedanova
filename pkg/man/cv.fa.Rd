@@ -2,9 +2,8 @@
 \alias{cv.fa}
 \title{Cross-validation function for fusedanova method.}
 \usage{
-  cv.fa(x, class, K = 10,
-    folds = split(sample(1:length(class)), rep(1:K, length = length(class))),
-    lambdalist = NULL, V = 1, verbose = TRUE, ...)
+cv.fa(x, class, K = 10, folds = split(sample(1:length(class)), rep(1:K,
+  length = length(class))), lambdalist = NULL, V = 1, verbose = TRUE, ...)
 }
 \arguments{
   \item{x}{matrix whose rows represent individuals and
@@ -50,14 +49,14 @@
   log10(\code{min.ratio}*\code{lambdamax}).  } }}
 }
 \value{
-  An object of class "cv.fa" for which a \code{plot} method
-  is available.
+An object of class "cv.fa" for which a \code{plot} method
+is available.
 }
 \description{
-  Function that computes K-fold cross-validated error of a
-  \code{fusedanova} fit. Possibility to perform V times the
-  whole K-fold CV to average the error and reduce the
-  reduce the CV standard error around the minimum.
+Function that computes K-fold cross-validated error of a
+\code{fusedanova} fit. Possibility to perform V times the
+whole K-fold CV to average the error and reduce the reduce
+the CV standard error around the minimum.
 }
 \examples{
 \dontrun{
@@ -67,8 +66,9 @@ V100.cv.out <- cv.fa(aves$weight, aves$family, V=50)
 }
 }
 \seealso{
-  \code{\linkS4class{fusedanova}}, \code{\link{plot.cv.fa}}
-  and \code{\linkS4class{cv.fa}}.
+\code{\linkS4class{fusedanova}},
+\code{\link{plot,cv.fa-method}} and
+\code{\linkS4class{cv.fa}}.
 }
 \keyword{models,}
 \keyword{regression}

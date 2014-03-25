@@ -20,11 +20,3 @@ Imports:
 Suggests:
     testthat
 LinkingTo: Rcpp
-Collate:
-    'crossval.R'
-    'crossval_class.R'
-    'fusedanova-class.R'
-    'fusedanova.R'
-    'init.R'
-    'fusedanova-package.R'
-    'aves.R'

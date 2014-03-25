@@ -46,7 +46,7 @@
 ##' @return An object of class "cv.fa" for which a \code{plot} method
 ##' is available.
 ##'
-##' @seealso \code{\linkS4class{fusedanova}}, \code{\link{plot.cv.fa}}
+##' @seealso \code{\linkS4class{fusedanova}}, \code{\link{plot,cv.fa-method}}
 ##' and \code{\linkS4class{cv.fa}}.
 ##'
 ##' @examples \dontrun{
@@ -81,28 +81,28 @@ cv.fa <- function(x,
 		args$mc.cores <- 1 # Windows does not support fork
 	}
 
-        if(!inherits(x, c("matrix", "Matrix")))
+        if(!is.matrix(x))
           x <- as.matrix(x)
-	n <- length(class)
+        n <- nrow(x)
 	p <- ncol(x)
-
+        if (missing(class))
+          class <- 1:n
+        
 	if (args$checkargs) {
-		if(!inherits(x, c("matrix", "Matrix")))
-		stop("x has to be of class 'matrix'.")
-		if(any(is.na(x)))
-		  stop("NA value in x not allowed.")
-		if(n != length(class))
-		  stop("x and y have not correct dimensions")
-		if(length(unique(class))==1)
-		  stop("y has only one level.")
-		if(!(args$weights %in% possibleWeights))
-		  stop("Unknown weight parameter formulation. Aborting.")
-		if (Sys.info()[['sysname']] == "Windows") {
-			if(verbose){
-                          warning("\nWindows does not support fork, enforcing mc.cores to '1'.")
-			}
-		}
-		args$checkargs = FALSE # not to check again in fused anova first call
+          if(any(is.na(x)))
+            stop("NA value in x not allowed.")
+          if(n != length(class))
+            stop("x and y have not correct dimensions")
+          if(length(unique(class))==1)
+            stop("y has only one level.")
+          if(!(args$weights %in% possibleWeights))
+            stop("Unknown weight parameter formulation. Aborting.")
+          if (Sys.info()[['sysname']] == "Windows") {
+            if(verbose){
+              warning("\nWindows does not support fork, enforcing mc.cores to '1'.")
+            }
+          }
+          args$checkargs = FALSE # not to check again in fused anova first call
 	}
 
 	## =============================================================

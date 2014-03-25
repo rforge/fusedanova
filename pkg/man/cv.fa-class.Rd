@@ -3,8 +3,8 @@
 \alias{cv.fa-class}
 \title{Class "cv.fa"}
 \description{
-  Class of object returned by a cross-validation performed
-  through the \code{cv.fa} method.
+Class of object returned by a cross-validation performed
+through the \code{cv.fa} method.
 }
 \section{Slots}{
   \describe{ \item{\code{byvariable}:}{list (for each
@@ -24,8 +24,8 @@
   The specific \code{\link{plot}} method is documented.
 }
 \seealso{
-  See also \code{\link{plot.cv.fa}} and
-  \code{\link{cv.fa}}.
+See also \code{\link{plot,cv.fa-method}} and
+\code{\link{cv.fa}}.
 }
 \keyword{class}
 

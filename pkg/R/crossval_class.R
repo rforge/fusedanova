@@ -24,7 +24,7 @@
 ##'
 ##' @keywords class
 ##'
-##' @seealso See also \code{\link{plot.cv.fa}} and
+##' @seealso See also \code{\link{plot,cv.fa-method}} and
 ##' \code{\link{cv.fa}}.
 ##'
 ##' @name cv.fa-class
@@ -50,8 +50,8 @@ setClass("cv.fa",
 ##' Produce a plot of the cross validated error of a \code{fusedanova}
 ##' model.
 ##'
-##' @usage plot.cv.fa(x, y, log.scale=TRUE, reverse=FALSE,
-##' plot=TRUE, main = "Cross-validation error", ...)
+##' @usage \\S4method{plot}{cv.fa}(x, y, varvect = NULL, plotting=TRUE,
+##' lambdamins=TRUE, log.scale=TRUE, reverse=FALSE,main = "Cross-validation error",...)
 ##' @param x output of a \code{crossval} run (must be of class
 ##' \code{cv.fa}).
 ##' @param y used for S4 compatibility.

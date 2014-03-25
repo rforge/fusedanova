@@ -1,13 +1,11 @@
 \docType{class}
 \name{fusedanova-class}
 \alias{fusedanova-class}
-\alias{predict,fusedanovaquadrupen-method}
 \alias{print,fusedanova-method}
 \alias{show,fusedanova-method}
 \title{Class "fusedanova"}
 \description{
-  Class of object returned by the \code{fusedanova}
-  function.
+Class of object returned by the \code{fusedanova} function.
 }
 \section{Slots}{
   \describe{
@@ -50,15 +48,16 @@
 
 \section{Methods}{
   Specific plotting, predict and conversion methods are
-  available and documented (\code{\link{plot.fusedanova}},
-  \code{\link{predict.fusedanova}},
-  \code{\link{dataconvert.fusedanova}}).
+  available and documented
+  (\code{\link{plot,fusedanova-method}},
+  \code{\link{predict,fusedanova-method}},
+  \code{\link{dataconvert,fusedanova-method}}).
 }
 \seealso{
-  See also \code{\link{plot.fusedanova}},
-  \code{\link{predict.fusedanova}}
-  \code{\link{dataconvert.fusedanova}} and
-  \code{\link{fusedanova}}.
+See also \code{\link{plot,fusedanova-method}},
+\code{\link{predict,fusedanova-method}}
+\code{\link{dataconvert,fusedanova-method}} and
+\code{\link{fusedanova}}.
 }
 \keyword{class}
 

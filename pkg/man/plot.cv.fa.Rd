@@ -1,8 +1,11 @@
 \docType{methods}
 \name{plot,cv.fa-method}
 \alias{plot,cv.fa-method}
-\alias{plot.cv.fa}
 \title{Plot method for cross validated error of a \code{fusedanova} model}
+\usage{
+\\S4method{plot}{cv.fa}(x, y, varvect = NULL, plotting=TRUE,
+lambdamins=TRUE, log.scale=TRUE, reverse=FALSE,main = "Cross-validation error",...)
+}
 \arguments{
   \item{x}{output of a \code{crossval} run (must be of
   class \code{cv.fa}).}
@@ -33,13 +36,13 @@
   \item{...}{used for S4 compatibility.}
 }
 \value{
-  a \pkg{ggplot2} object or a list of \pkg{ggplot2} objects
-  (if a list of variable was provided) which can be plotted
-  via the \code{print} method
+a \pkg{ggplot2} object or a list of \pkg{ggplot2} objects
+(if a list of variable was provided) which can be plotted
+via the \code{print} method
 }
 \description{
-  Produce a plot of the cross validated error of a
-  \code{fusedanova} model.
+Produce a plot of the cross validated error of a
+\code{fusedanova} model.
 }
 \examples{
 \dontrun{
@@ -51,6 +54,6 @@ plot(V100.cv.out)
 }
 }
 \seealso{
-  \code{\linkS4class{cv.fa}}.
+\code{\linkS4class{cv.fa}}.
 }
 
