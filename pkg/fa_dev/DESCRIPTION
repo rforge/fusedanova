@@ -1,0 +1,22 @@
+Package: fusedanova2
+Type: Package
+Title: Fused-ANOVA
+Version: 0.1-0
+Date: 2016-04-21
+Author: Pierre Gutierrez, Julien Chiquet, Guillem Rigaill
+Maintainer: Julien Chiquet <julien.chiquet@genopole.cnrs.fr>
+Description: This package implements Fused-ANOVA, a penalized method to solve
+    the one-way ANOVA problem by collapsing the coefficients of K conditions.
+    It reconstructs a balanced tree structure between the condition with a
+    homotopy algorithm in O(K log(K)).
+License: GPL (>=2)
+Depends:
+    ggplot2
+Imports:
+    methods,
+    parallel,
+    grid,
+    plyr
+Suggests:
+    testthat
+LinkingTo: Rcpp
